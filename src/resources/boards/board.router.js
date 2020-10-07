@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const boardsService = require('./board.service');
+const tasksService = require('../tasks/task.service');
 const uuid = require('uuid');
 
 router.route('/').get(async (req, res) => {
@@ -26,6 +27,40 @@ router.route('/:id').put(async (req, res) => {
 router.route('/:id').delete(async (req, res) => {
   await boardsService.deleteBoard(req.params.id);
   res.status(200).json({ message: 'Board was deleted' });
+});
+
+// tasks
+router.route('/:boardId/tasks').get(async (req, res) => {
+  const tasks = await tasksService.getAll(req.params.boardId);
+  res.json(tasks);
+});
+
+router.route('/:boardId/tasks/:taskId').get(async (req, res) => {
+  const tasks = await tasksService.getById(
+    req.params.taskId,
+    req.params.boardId
+  );
+  res.status(tasks ? 200 : 404).json(tasks);
+});
+
+router.route('/:boardId/tasks').post(async (req, res) => {
+  const taskData = { ...req.body, id: uuid(), boardId: req.params.boardId };
+  await tasksService.addTask(taskData);
+  res.json(taskData);
+});
+
+router.route('/:boardId/tasks/:taskId').put(async (req, res) => {
+  const task = await tasksService.changeTask(
+    req.body,
+    req.params.taskId,
+    req.params.boardId
+  );
+  res.json(task);
+});
+
+router.route('/:boardId/tasks/:taskId').delete(async (req, res) => {
+  await tasksService.deleteTask(req.params.taskId, req.params.boardId);
+  res.status(200).json({ message: 'Task was deleted' });
 });
 
 module.exports = router;

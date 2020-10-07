@@ -1,12 +1,12 @@
 const uuid = require('uuid');
 let TASKS = [
   {
-    id: uuid(),
+    id: '1',
     title: 'title',
     order: 'order',
     description: 'description',
     userId: 'id',
-    boardId: 'id',
+    boardId: '1bc0dcc1-0e13-40ae-bab9-001e486e83f4',
     columnId: 'id'
   },
   {
@@ -20,18 +20,16 @@ let TASKS = [
   }
 ];
 
-const getAll = () => {
-  return TASKS;
-};
-
-const getAllByBoardId = boardId => {
+const getAll = boardId => {
   const tasks = TASKS.filter(item => item.boardId === boardId);
   return tasks;
 };
 
-const getById = id => {
-  const task = TASKS.filter(item => item.id === id);
-  return task;
+const getById = (taskId, boardId) => {
+  const task = TASKS.filter(
+    item => item.id === taskId && item.boardId === boardId
+  );
+  return task[0];
 };
 
 const addTask = taskData => {
@@ -39,21 +37,39 @@ const addTask = taskData => {
   return taskData;
 };
 
-const changeTask = (newTaskData, id) => {
-  const idx = TASKS.findIndex(item => item.id === id);
+const changeTask = (newTaskData, taskId, boardId) => {
+  const idx = TASKS.findIndex(
+    item => item.id === taskId && item.boardId === boardId
+  );
   TASKS[idx] = newTaskData;
   return TASKS[idx];
 };
 
-const deleteTask = id => {
-  TASKS = TASKS.filter(item => item.id !== id);
+const deleteTask = (taskId, boardId) => {
+  TASKS = TASKS.filter(item => item.id !== taskId || item.boardId !== boardId);
+};
+
+const deleteTasksByBoardId = boardId => {
+  TASKS = TASKS.filter(item => item.boardId !== boardId);
+};
+
+const updateIdOfDeletedUser = userId => {
+  TASKS = TASKS.map(item => {
+    if (item.userId === userId) {
+      const newItem = item;
+      newItem.userId = null;
+      return newItem;
+    }
+    return item;
+  });
 };
 
 module.exports = {
-  getAllByBoardId,
   getById,
   addTask,
   changeTask,
   deleteTask,
-  getAll
+  getAll,
+  deleteTasksByBoardId,
+  updateIdOfDeletedUser
 };

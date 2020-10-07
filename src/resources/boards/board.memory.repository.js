@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+const tasksService = require('../tasks/task.service');
 
 let BOARDS = [
   {
@@ -29,7 +30,11 @@ const changeBoard = (newBoardData, id) => {
 };
 
 const deleteBoard = id => {
-  BOARDS = BOARDS.filter(item => item.id !== id);
+  BOARDS = BOARDS.filter(item => {
+    if (item.id !== id) return true;
+    tasksService.deleteTasksByBoardId(item.id);
+    return false;
+  });
 };
 
 module.exports = { getAll, getById, createBoard, changeBoard, deleteBoard };

@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+const tasksService = require('../tasks/task.service');
 /* const User = require('./user.model'); */
 let USERS = [
   {
@@ -36,7 +37,11 @@ const changeUser = (newUserData, id) => {
 };
 
 const deleteUser = id => {
-  USERS = USERS.filter(item => item.id !== id);
+  USERS = USERS.filter(item => {
+    if (item.id !== id) return true;
+    tasksService.updateIdOfDeletedUser(item.id);
+    return false;
+  });
 };
 
 module.exports = { getAll, createUser, getById, changeUser, deleteUser };
