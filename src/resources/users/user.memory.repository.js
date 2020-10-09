@@ -1,6 +1,5 @@
 const uuid = require('uuid');
 const tasksService = require('../tasks/task.service');
-/* const User = require('./user.model'); */
 let USERS = [
   {
     id: uuid(),
