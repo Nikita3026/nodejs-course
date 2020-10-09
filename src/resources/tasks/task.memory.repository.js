@@ -1,7 +1,7 @@
 const uuid = require('uuid');
 let TASKS = [
   {
-    id: '1',
+    id: uuid(),
     title: 'title',
     order: 'order',
     description: 'description',
@@ -14,9 +14,9 @@ let TASKS = [
     title: 'title',
     order: 'order',
     description: 'description',
-    userId: 'i',
-    boardId: 'i',
-    columnId: 'i'
+    userId: 'id',
+    boardId: 'id',
+    columnId: 'id'
   }
 ];
 
