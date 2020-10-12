@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const boardsService = require('./board.service');
-const tasksService = require('../tasks/task.service');
+/* const tasksService = require('../tasks/task.service'); */
 const uuid = require('uuid');
 
 router.route('/').get(async (req, res) => {
@@ -14,8 +14,10 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-  const boardData = { ...req.body, id: uuid() };
-  await boardsService.createBoard(boardData);
+  const boardData = await boardsService.createBoard({
+    ...req.body,
+    id: uuid()
+  });
   res.json(boardData);
 });
 
@@ -29,7 +31,7 @@ router.route('/:id').delete(async (req, res) => {
   res.status(200).json({ message: 'Board was deleted' });
 });
 
-// tasks
+/* // tasks
 router.route('/:boardId/tasks').get(async (req, res) => {
   const tasks = await tasksService.getAll(req.params.boardId);
   res.json(tasks);
@@ -62,5 +64,5 @@ router.route('/:boardId/tasks/:taskId').delete(async (req, res) => {
   await tasksService.deleteTask(req.params.taskId, req.params.boardId);
   res.status(200).json({ message: 'Task was deleted' });
 });
-
+ */
 module.exports = router;
