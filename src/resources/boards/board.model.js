@@ -11,4 +11,11 @@ const boardSchema = new Schema({
   }
 });
 
+function toResponse() {
+  const { id, title, columns } = this;
+  return { id, title, columns };
+}
+
+boardSchema.methods.toResponse = toResponse;
+
 module.exports = model('Board', boardSchema);

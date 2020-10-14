@@ -15,9 +15,11 @@ const userSchema = new Schema({
   }
 });
 
-/* userSchema.methods.toResponse = function () {
+function toResponse() {
   const { id, name, login } = this;
   return { id, name, login };
-}; */
+}
+
+userSchema.methods.toResponse = toResponse;
 
 module.exports = model('User', userSchema);

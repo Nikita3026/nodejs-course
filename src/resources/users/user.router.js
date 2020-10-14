@@ -1,7 +1,5 @@
 const router = require('express').Router();
-/* const User = require('./user.model'); */
 const usersService = require('./user.service');
-/* const uuid = require('uuid'); */
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
@@ -10,7 +8,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/:id').get(async (req, res) => {
   const user = await usersService.getById(req.params.id);
-  res.status(user ? 200 : 404).json(user.toResponse());
+  res.status(user ? 200 : 404).json(user ? user.toResponse() : user);
 });
 
 router.route('/').post(async (req, res) => {

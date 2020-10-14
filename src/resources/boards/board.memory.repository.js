@@ -1,6 +1,5 @@
-/* const tasksService = require('../tasks/task.service'); */
+const tasksService = require('../tasks/task.service');
 const Board = require('./board.model');
-/* const mongoose = require('mongoose'); */
 
 const getAll = async () => {
   const boards = await Board.find({});
@@ -26,8 +25,8 @@ const changeBoard = async (newBoardData, id) => {
 };
 
 const deleteBoard = async id => {
-  /*   tasksService.deleteTasksByBoardId(id);
-   */ await Board.findByIdAndDelete(id);
+  await tasksService.deleteTasksByBoardId(id);
+  await Board.findByIdAndDelete(id);
 };
 
 module.exports = { getAll, getById, createBoard, changeBoard, deleteBoard };

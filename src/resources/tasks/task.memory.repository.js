@@ -1,67 +1,50 @@
-const uuid = require('uuid');
-let TASKS = [
-  {
-    id: uuid(),
-    title: 'title',
-    order: 'order',
-    description: 'description',
-    userId: 'id',
-    boardId: '1bc0dcc1-0e13-40ae-bab9-001e486e83f4',
-    columnId: 'id'
-  },
-  {
-    id: uuid(),
-    title: 'title',
-    order: 'order',
-    description: 'description',
-    userId: 'id',
-    boardId: 'id',
-    columnId: 'id'
-  }
-];
+const Task = require('./task.model');
 
-const getAll = boardId => {
-  const tasks = TASKS.filter(item => item.boardId === boardId);
+const getAll = async boardId => {
+  const tasks = await Task.find({ boardId });
   return tasks;
 };
 
-const getById = (taskId, boardId) => {
-  const task = TASKS.filter(
-    item => item.id === taskId && item.boardId === boardId
-  );
-  return task[0];
+const getById = async (taskId, boardId) => {
+  const task = await Task.findOne({ _id: taskId, boardId });
+  return task;
 };
 
-const addTask = taskData => {
-  TASKS.push(taskData);
-  return taskData;
+const addTask = async taskData => {
+  const newTask = new Task(taskData);
+  await newTask.save();
+  return newTask;
 };
 
-const changeTask = (newTaskData, taskId, boardId) => {
-  const idx = TASKS.findIndex(
-    item => item.id === taskId && item.boardId === boardId
-  );
-  TASKS[idx] = newTaskData;
-  return TASKS[idx];
-};
-
-const deleteTask = (taskId, boardId) => {
-  TASKS = TASKS.filter(item => item.id !== taskId || item.boardId !== boardId);
-};
-
-const deleteTasksByBoardId = boardId => {
-  TASKS = TASKS.filter(item => item.boardId !== boardId);
-};
-
-const updateIdOfDeletedUser = userId => {
-  TASKS = TASKS.map(item => {
-    if (item.userId === userId) {
-      const newItem = item;
-      newItem.userId = null;
-      return newItem;
+const changeTask = async (newTaskData, taskId, boardId) => {
+  const updatedTask = await Task.findOneAndUpdate(
+    { _id: taskId, boardId },
+    newTaskData,
+    {
+      new: true
     }
-    return item;
-  });
+  );
+  return updatedTask;
+};
+
+const deleteTask = async (taskId, boardId) => {
+  await Task.findOneAndDelete({ _id: taskId, boardId });
+};
+
+const deleteTasksByBoardId = async boardId => {
+  await Task.deleteMany({ boardId });
+};
+
+const updateIdOfDeletedUser = async userId => {
+  const newTask = await Task.updateMany(
+    { userId },
+    { userId: null },
+    {
+      new: true
+    }
+  );
+  console.log(newTask);
+  return newTask;
 };
 
 module.exports = {
