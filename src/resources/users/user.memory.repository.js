@@ -1,46 +1,32 @@
-const uuid = require('uuid');
 const tasksService = require('../tasks/task.service');
-let USERS = [
-  {
-    id: uuid(),
-    name: 'Nikita',
-    login: 'user',
-    password: 'P@55w0rd'
-  },
-  {
-    id: uuid(),
-    name: 'Sasha',
-    login: 'user',
-    password: 'P@55w0rd'
-  }
-];
+const User = require('./user.model');
 
 const getAll = async () => {
-  return USERS;
+  const users = await User.find({});
+  return users;
 };
 
-const createUser = userData => {
-  USERS.push(userData);
-  return userData;
+const createUser = async userData => {
+  const newUser = new User(userData);
+  await newUser.save();
+  return newUser;
 };
 
-const getById = id => {
-  const user = USERS.filter(item => item.id === id);
-  return user[0];
+const getById = async id => {
+  const user = await User.findById(id);
+  return user;
 };
 
-const changeUser = (newUserData, id) => {
-  const idx = USERS.findIndex(item => item.id === id);
-  USERS[idx] = newUserData;
-  return USERS[idx];
-};
-
-const deleteUser = id => {
-  USERS = USERS.filter(item => {
-    if (item.id !== id) return true;
-    tasksService.updateIdOfDeletedUser(item.id);
-    return false;
+const changeUser = async (newUserData, id) => {
+  const updatedUser = await User.findByIdAndUpdate(id, newUserData, {
+    new: true
   });
+  return updatedUser;
+};
+
+const deleteUser = async id => {
+  tasksService.updateIdOfDeletedUser(id);
+  await User.findByIdAndDelete(id);
 };
 
 module.exports = { getAll, createUser, getById, changeUser, deleteUser };
